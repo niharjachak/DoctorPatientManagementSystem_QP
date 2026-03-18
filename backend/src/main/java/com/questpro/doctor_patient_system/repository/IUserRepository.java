@@ -1,11 +1,11 @@
 package com.questpro.doctor_patient_system.repository;
 
-import com.questpro.doctor_patient_system.entities.User;
+import com.questpro.doctor_patient_system.entities.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface IUserRepository extends JpaRepository<User, Long> {
+public interface IUserRepository extends JpaRepository<Users, Long> {
 
-     Optional<User> findByEmail(String email);
+     Optional<Users> findByEmail(String email);
 }

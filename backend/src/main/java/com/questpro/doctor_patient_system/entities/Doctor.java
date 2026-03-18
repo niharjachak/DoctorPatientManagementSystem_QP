@@ -21,7 +21,7 @@ public class Doctor {
 
     @OneToOne
     @JoinColumn(name = "user_id",nullable = false,unique=true)
-    private User user;
+    private Users users;
 
     @Enumerated(EnumType.STRING)
     private Speciality speciality;

@@ -21,6 +21,6 @@ public class Patient {
 
     @OneToOne
     @JoinColumn(name ="user_id")
-    private User user;
+    private Users users;
 
 }
