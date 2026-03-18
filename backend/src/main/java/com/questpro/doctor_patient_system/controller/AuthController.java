@@ -26,6 +26,14 @@ public class AuthController {
                 .body(new ApiResponse<>(true,"Patient Registration Successful", response));
     }
 
+    @PostMapping("/register/admin")
+    public ResponseEntity<ApiResponse<RegisterResponseDto>> registerAdmin(@RequestBody AdminRegisterRequestDto registerRequestDto){
+        RegisterResponseDto response=authService.registerAdmin(registerRequestDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponse<>(true,"Admin Registration Successful", response));
+    }
+
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<?>> loginUser(@RequestBody LoginRequestDto loginRequestDto){

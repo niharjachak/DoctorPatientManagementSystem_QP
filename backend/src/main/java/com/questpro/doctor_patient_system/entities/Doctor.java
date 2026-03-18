@@ -26,18 +26,21 @@ public class Doctor {
     @Enumerated(EnumType.STRING)
     private Speciality speciality;
 
+    @Column(nullable = false)
     private String qualification;
 
+    @Column(nullable = false)
     private int yearsOfExperience;
-
-    private LocalDate dateOfBirth;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    @Column(nullable = false)
     private double fees;
 
-    private String clinicName;
+    @ManyToOne
+    @JoinColumn(name="hospital_id" ,nullable = false)
+    private Hospital hospital;
 
     @Lob
     @Column(columnDefinition = "MEDIUMBLOB")

@@ -1,15 +1,15 @@
 package com.questpro.doctor_patient_system.service;
 
-import com.questpro.doctor_patient_system.dtos.LoginRequestDto;
-import com.questpro.doctor_patient_system.dtos.LoginResponseDto;
-import com.questpro.doctor_patient_system.dtos.RegisterRequestDto;
-import com.questpro.doctor_patient_system.dtos.RegisterResponseDto;
+import com.questpro.doctor_patient_system.dtos.*;
+import com.questpro.doctor_patient_system.entities.Hospital;
 import com.questpro.doctor_patient_system.entities.Patient;
 import com.questpro.doctor_patient_system.entities.Users;
 import com.questpro.doctor_patient_system.enums.Role;
+import com.questpro.doctor_patient_system.exceptions.HospitalNotFoundException;
 import com.questpro.doctor_patient_system.exceptions.InvalidLoginCredentialsException;
 import com.questpro.doctor_patient_system.exceptions.UserAlreadyExistsException;
 import com.questpro.doctor_patient_system.exceptions.UserNotFoundException;
+import com.questpro.doctor_patient_system.repository.IHospitalRepository;
 import com.questpro.doctor_patient_system.repository.IPatientRepository;
 import com.questpro.doctor_patient_system.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +38,9 @@ public class AuthService {
 
     @Autowired
     private JwtService jwtService;
+
+    @Autowired
+    private IHospitalRepository hospitalRepository;
 
 
     public LoginResponseDto loginUser(LoginRequestDto loginRequestDto) {
@@ -81,16 +84,51 @@ public class AuthService {
         users.setActive(true);
         users.setCreatedAt(LocalDateTime.now());
 
-        userRepository.save(users);
+        Users savedUser = userRepository.save(users);
 
         Patient patient= new Patient();
         patient.setDateOfBirth(registerRequestDto.getDateOfBirth());
-        patient.setUsers(users);
+        patient.setUsers(savedUser);
         patientRepository.save(patient);
 
         return new RegisterResponseDto(
-                users.getUserId(),
-                users.getEmail()
+                savedUser.getUserId(),
+                savedUser.getEmail(),
+                savedUser.getName(),
+                savedUser.getRole().name()
+        );
+
+    }
+
+    public RegisterResponseDto registerAdmin(AdminRegisterRequestDto dto) {
+        // 1.Check if user already exists
+        if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
+            throw new UserAlreadyExistsException("User Already Exists");
+        }
+        //2 Fetch the hospital for Administration
+        Hospital hospital = hospitalRepository.findById(dto.getHospitalId())
+                .orElseThrow(() -> new HospitalNotFoundException("Hospital with id" + dto.getHospitalId() + " not found"));
+
+
+        // 3 build the user entity
+        Users users = new Users();
+        users.setName(dto.getName());
+        users.setEmail(dto.getEmail());
+        users.setPassword(passwordEncoder.encode(dto.getPassword()));
+        users.setPhoneNumber(dto.getPhoneNumber());
+        users.setRole(Role.ADMIN);
+        users.setHospital(hospital);
+        users.setCreatedAt(LocalDateTime.now());
+        users.setActive(true);
+        users.setMustChangePassword(false);
+
+        Users savedUser = userRepository.save(users);
+
+        return new RegisterResponseDto(
+                savedUser.getUserId(),
+                savedUser.getEmail(),
+                savedUser.getName(),
+                savedUser.getRole().name()
         );
     }
 }

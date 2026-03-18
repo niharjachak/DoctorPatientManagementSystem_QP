@@ -18,6 +18,10 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long userId;
 
+    @ManyToOne
+    @JoinColumn(name = "hospital_id")
+    private Hospital hospital;
+
     @Column(nullable = false)
     private String name;
 

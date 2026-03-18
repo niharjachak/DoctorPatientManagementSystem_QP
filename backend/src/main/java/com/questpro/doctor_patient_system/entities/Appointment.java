@@ -31,9 +31,14 @@ public class Appointment {
     @JoinColumn(name = "slot_id" , unique = true)
     private Slot slot;
 
+    @ManyToOne
+    @JoinColumn(name = "hospital_id")
+    private Hospital hospital;
+
     @Enumerated(EnumType.STRING)
     private AppointmentStatus appointmentStatus= AppointmentStatus.BOOKED;
 
+    @Column(nullable = false)
     private LocalDateTime bookedAt;
 
     private LocalDateTime cancelledAt;
