@@ -4,7 +4,6 @@ import com.questpro.doctor_patient_system.dtos.*;
 import com.questpro.doctor_patient_system.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,8 +18,8 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/register/patient")
-    public ResponseEntity<ApiResponse<RegisterResponseDto>> registerPatient(@RequestBody RegisterRequestDto registerRequestDto){
-        RegisterResponseDto response=authService.registerUser(registerRequestDto);
+    public ResponseEntity<ApiResponse<PatientRegisterResponseDto>> registerPatient(@RequestBody RegisterRequestDto registerRequestDto){
+        PatientRegisterResponseDto response=authService.registerPatient(registerRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ApiResponse<>(true,"Patient Registration Successful", response));

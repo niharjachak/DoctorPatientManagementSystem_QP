@@ -16,8 +16,8 @@ public class CreateDoctorResponseDto {
     private String name;
     private String email;
     private String temporaryPassword;
-    private String speciality;
     private String hospitalName;
+    private String speciality;
 
 
 

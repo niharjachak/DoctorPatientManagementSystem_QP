@@ -9,10 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AdminRegisterRequestDto {
+public class HospitalResponseDto {
+    private long id;
     private String name;
-    private String email;
-    private String password;
-    private String phoneNumber;
-    private long hospitalId;
+    private String city;
+
 }

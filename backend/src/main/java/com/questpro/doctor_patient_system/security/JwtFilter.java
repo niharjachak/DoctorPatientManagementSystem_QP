@@ -52,8 +52,22 @@ public class JwtFilter extends OncePerRequestFilter {
 
             if(jwtService.isTokenValid(token , userDetails)){
                 String role= jwtService.extractRole(token);
+                boolean mustChangePassword= jwtService.extractMustChangePassword(token);
+
+                // If the doctor's mustchangepassword is true (has not changed password)
+                // and is trying to access any other doctor endpoint other than "/doctor/change-password"
+                //  return a 403 forbidden response and return a json with the below message
+                if(mustChangePassword && !request.getRequestURI().equals("/doctor/change-password")){
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    response.setContentType("application/json");
+                    response.getWriter().write(
+                            "{\"success\":false,\"message\":\"Please update your password before proceeding\",\"data\":null}"
+                    );
+                    return ;
+                }
 
                 System.out.println("ROLE_"+role);
+
 
                 List<SimpleGrantedAuthority> authorityList= List.of(new SimpleGrantedAuthority("ROLE_"+role));
 

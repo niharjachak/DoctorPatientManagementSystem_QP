@@ -10,7 +10,6 @@ public enum Speciality {
     HOMEOPATHY,
     ORTHOPEDICS,
 
-    // Consider adding these common ones
     GYNECOLOGY,
     PSYCHIATRY,
     RADIOLOGY,

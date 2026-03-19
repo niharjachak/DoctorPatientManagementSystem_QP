@@ -24,6 +24,7 @@ public class JwtService {
         return Jwts.builder()
                 .subject(users.getEmail())
                 .claim("role", users.getRole().name())
+                .claim("mustChangePassword", users.isMustChangePassword())   // for doctor password login change
                 .issuedAt(new Date())                          //milisec sec  minutes
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))   // 1hr token
 
@@ -41,12 +42,6 @@ public class JwtService {
                 .getSubject();
 
     }
-
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        String userEmail = extractUserEmailFromToken(token);
-        return userEmail.equals(userDetails.getUsername());
-    }
-
     public String extractRole(String token){
         return Jwts.
                 parser()
@@ -56,6 +51,23 @@ public class JwtService {
                 .getPayload()
                 .get("role",String.class);
     }
+
+    public boolean extractMustChangePassword(String token){
+        return Jwts.
+                parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get("mustChangePassword",Boolean.class);
+    }
+
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        String userEmail = extractUserEmailFromToken(token);
+        return userEmail.equals(userDetails.getUsername());
+    }
+
+
 
 
 

@@ -63,14 +63,17 @@ public class AuthService {
         String token = jwtService.generateToken(users);
 
 
-        return new LoginResponseDto(
-                token,
-                users.getRole().name()
-        );
+        return LoginResponseDto.builder()
+                .token(token)
+                .role(users.getRole().name())
+                .name(users.getName())
+                .mustChangePassword(users.isMustChangePassword())
+                .build();
+
 
     }
 
-    public RegisterResponseDto registerUser(RegisterRequestDto registerRequestDto){
+    public PatientRegisterResponseDto registerPatient(RegisterRequestDto registerRequestDto){
         if(userRepository.findByEmail(registerRequestDto.getEmail()).isPresent()){
             throw new UserAlreadyExistsException( "User with email already exists");
         }
@@ -91,12 +94,14 @@ public class AuthService {
         patient.setUsers(savedUser);
         patientRepository.save(patient);
 
-        return new RegisterResponseDto(
-                savedUser.getUserId(),
-                savedUser.getEmail(),
-                savedUser.getName(),
-                savedUser.getRole().name()
-        );
+        return  PatientRegisterResponseDto
+                .builder()
+                .userId(savedUser.getUserId())
+                .patientId(patient.getPatientId())
+                .email(savedUser.getEmail())
+                .name(savedUser.getName())
+                .role(savedUser.getRole().name())
+                .build();
 
     }
 
@@ -124,11 +129,14 @@ public class AuthService {
 
         Users savedUser = userRepository.save(users);
 
-        return new RegisterResponseDto(
-                savedUser.getUserId(),
-                savedUser.getEmail(),
-                savedUser.getName(),
-                savedUser.getRole().name()
-        );
+        return  RegisterResponseDto
+                .builder()
+                .id(savedUser.getUserId())
+                .email(savedUser.getEmail())
+                .name(savedUser.getName())
+                .role(savedUser.getRole().name())
+                .build();
+
+
     }
 }

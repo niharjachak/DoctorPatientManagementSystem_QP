@@ -27,4 +27,29 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse<>(false,ex.getMessage(),null));
     }
 
+    @ExceptionHandler(InvalidSlotTimeException.class)
+    public ResponseEntity<ApiResponse<?>> handleInvalidSlotTimeException(InvalidSlotTimeException ex){
+        return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ApiResponse<>(false,ex.getMessage(),null));
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ApiResponse<?>> handleUnauthorizedException(UnauthorizedException ex){
+        return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ApiResponse<>(false,ex.getMessage(),null));
+    }
+
+    @ExceptionHandler(DoctorImageNotFoundException.class)
+    public ResponseEntity<ApiResponse<?>> handleDoctorImageNotFoundException(DoctorImageNotFoundException ex){
+        return  ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ApiResponse<>(false,ex.getMessage(),null));
+    }
+
+
+    @ExceptionHandler(AppointmentNotFoundException.class)
+    public ResponseEntity<ApiResponse<?>> handleAppointmentNotFoundException(AppointmentNotFoundException ex){
+        return  ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ApiResponse<>(false,ex.getMessage(),null));
+    }
+
 }
