@@ -17,11 +17,15 @@ public class CreateDoctorRequestDto {
     private String name;
 
     @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
+    @Size(max = 100, message = "Email must not exceed 100 characters")
+    @Pattern(
+            regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$",
+            message = "Invalid email format"
+    )
     private String email;
 
     @NotBlank(message = "Phone number is required")
-    @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must be exactly 10 digits")
+    @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must be exactly 10 digits and must Contain Numbers Only")
     private String phoneNumber;
 
     @NotNull(message = "Speciality is required")
