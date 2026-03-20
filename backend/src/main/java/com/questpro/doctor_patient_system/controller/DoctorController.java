@@ -6,6 +6,7 @@ import com.questpro.doctor_patient_system.dtos.SlotRequestDto;
 import com.questpro.doctor_patient_system.dtos.SlotResponseDto;
 import com.questpro.doctor_patient_system.service.DoctorService;
 import com.questpro.doctor_patient_system.service.SlotService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class DoctorController {
     @PostMapping("/change-password")
     @PreAuthorize("hasRole('DOCTOR')")
     public ResponseEntity<ApiResponse<String>> changePassword(
-            @RequestBody ChangePasswordRequestDto dto,
+            @Valid @RequestBody ChangePasswordRequestDto dto,
             Authentication authentication
             ){
         String doctorEmail = authentication.getName();
@@ -40,7 +41,7 @@ public class DoctorController {
     @PostMapping("/addslots")
     @PreAuthorize("hasRole('DOCTOR')")
     public ResponseEntity<ApiResponse<SlotResponseDto>> addSlot(
-            @RequestBody SlotRequestDto dto,
+            @Valid @RequestBody SlotRequestDto dto,
             Authentication authentication) {
         SlotResponseDto response = slotService.addSlot(dto, authentication.getName());
         return ResponseEntity.status(HttpStatus.CREATED)

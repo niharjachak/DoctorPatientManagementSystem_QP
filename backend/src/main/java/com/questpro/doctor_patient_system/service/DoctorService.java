@@ -107,6 +107,13 @@ public class DoctorService {
 
     public List<DoctorSearchResponseDto> searchDoctors(DoctorFilterDto filter) {
 
+
+        if (filter.getMinFee() != null && filter.getMaxFee() != null) {
+            if (filter.getMinFee() > filter.getMaxFee()) {
+                throw new RuntimeException("Minimum fee cannot be greater than maximum fee");
+            }
+        }
+
         Specification<Doctor> spec = DoctorSpecification.withFilters(filter);
         List<Doctor> doctors = doctorRepository.findAll(spec);
 
@@ -118,7 +125,11 @@ public class DoctorService {
     public DoctorDetailResponseDto getDoctorById(Long doctorId) {
 
         Doctor doctor = doctorRepository.findById(doctorId)
-                .orElseThrow(() -> new RuntimeException("Doctor not found"));
+                .orElseThrow(() -> new UserNotFoundException("Doctor not found"));
+
+        if (!doctor.getUsers().isActive()) {
+            throw new InactiveUserException("This doctor is no longer available");
+        }
 
         // fetch only available slots
         List<SlotResponseDto> availableSlots = slotRepository
@@ -171,7 +182,7 @@ public class DoctorService {
     }
 
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public void updateDoctorStatus(Long doctorId, boolean isActive, String adminEmail) {
 
         //validate the hospital

@@ -7,6 +7,7 @@ import com.questpro.doctor_patient_system.entities.Slot;
 import com.questpro.doctor_patient_system.entities.Users;
 import com.questpro.doctor_patient_system.enums.SlotStatus;
 import com.questpro.doctor_patient_system.exceptions.InvalidSlotTimeException;
+import com.questpro.doctor_patient_system.exceptions.SlotBookedException;
 import com.questpro.doctor_patient_system.exceptions.UnauthorizedException;
 import com.questpro.doctor_patient_system.exceptions.UserNotFoundException;
 import com.questpro.doctor_patient_system.repository.IDoctorRepository;
@@ -32,6 +33,7 @@ public class SlotService {
 
 
 
+    //--------------------------ADD A SLOT ----------------------------//
     @Transactional
     public SlotResponseDto addSlot(SlotRequestDto dto, String doctorEmail){
 
@@ -70,6 +72,7 @@ public class SlotService {
 
     }
 
+    // ------------VIEW DOCTORSLOTS
     public List<SlotResponseDto> getMySlots(String doctorEmail) {
         Doctor doctor = getDoctorFromEmail(doctorEmail);
 
@@ -81,7 +84,7 @@ public class SlotService {
                 .toList();
     }
 
-    // ── DELETE /doctor/slots/{slotId} ──────────────────────────
+    // ── DELETE A SLOT ──────────────────────────
     @Transactional
     public void deleteSlot(Long slotId, String doctorEmail) {
         Doctor doctor = getDoctorFromEmail(doctorEmail);
@@ -96,7 +99,7 @@ public class SlotService {
 
         // 2. Cannot delete a booked slot
         if (slot.getSlotStatus() == SlotStatus.BOOKED) {
-            throw new RuntimeException("Cannot delete a slot that is already booked");
+            throw new SlotBookedException("Cannot delete a slot that is already booked");
         }
 
         slotRepository.delete(slot);

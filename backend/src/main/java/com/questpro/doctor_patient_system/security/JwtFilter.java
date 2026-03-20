@@ -1,5 +1,6 @@
 package com.questpro.doctor_patient_system.security;
 
+import com.questpro.doctor_patient_system.repository.IBlacklistedTokenRepository;
 import com.questpro.doctor_patient_system.service.CustomUserDetailService;
 import com.questpro.doctor_patient_system.service.JwtService;
 import jakarta.servlet.FilterChain;
@@ -30,6 +31,8 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private CustomUserDetailService customUserDetailService;
 
+    @Autowired
+    private IBlacklistedTokenRepository blacklistedTokenRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -45,6 +48,16 @@ public class JwtFilter extends OncePerRequestFilter {
         // Remove "Bearer " prefix from token
         String token= jwtToken.substring(7);
         String email = jwtService.extractUserEmailFromToken(token);
+
+        //  Check if token is blacklisted
+        if (blacklistedTokenRepository.existsByToken(token)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write(
+                    "{\"success\":false,\"message\":\"Token has been invalidated. Please login again.\",\"data\":null}"
+            );
+            return;
+        }
 
             // check if user is already authenticated
         if(email!= null && SecurityContextHolder.getContext().getAuthentication() ==null){

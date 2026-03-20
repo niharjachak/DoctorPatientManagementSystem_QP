@@ -19,7 +19,7 @@ import java.util.List;
 public class DoctorSpecification {
     public static Specification<Doctor> withFilters(DoctorFilterDto filterDto){
 
-
+                            // doctor            sqlquery           builds conditions
         return (root, query, criteriaBuilder) -> {
 
             List<Predicate> predicates = new ArrayList<>();
@@ -75,9 +75,9 @@ public class DoctorSpecification {
 
                 slotSubQuery.select(slotRoot.get("doctor").get("doctorId"))
                         .where(
-                                criteriaBuilder.equal(slotRoot.get("doctor"), root),
-                                criteriaBuilder.equal(slotRoot.get("slotDate"), filterDto.getDate()),
-                                criteriaBuilder.equal(slotRoot.get("slotStatus"), SlotStatus.AVAILABLE)
+                                criteriaBuilder.equal(slotRoot.get("doctor"), root), // the slot belongs to this doctor
+                                criteriaBuilder.equal(slotRoot.get("slotDate"), filterDto.getDate()),// on this date
+                                criteriaBuilder.equal(slotRoot.get("slotStatus"), SlotStatus.AVAILABLE)// and is available
                         );
 
                 predicates.add(criteriaBuilder.exists(slotSubQuery));

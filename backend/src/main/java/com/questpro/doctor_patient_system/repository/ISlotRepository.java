@@ -37,7 +37,7 @@ public interface ISlotRepository extends JpaRepository<Slot,Long> {
             @Param("endTime") LocalDateTime endTime
     );
 
-    //the database row gets locke untill one transaction completes
+    //the database row gets locked untill one transaction completes
     // so no two people can book same slot at one time
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT s FROM Slot s WHERE s.slotId = :slotId")

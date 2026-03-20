@@ -34,8 +34,7 @@ public class Slot {
     @Enumerated(EnumType.STRING)
     private SlotStatus slotStatus = SlotStatus.AVAILABLE;
 
-    @Version
-    private int version;
+
 
 
 }

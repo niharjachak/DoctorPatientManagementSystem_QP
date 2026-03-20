@@ -1,14 +1,13 @@
 package com.questpro.doctor_patient_system.service;
 
 import com.questpro.doctor_patient_system.dtos.*;
+import com.questpro.doctor_patient_system.entities.BlacklistedToken;
 import com.questpro.doctor_patient_system.entities.Hospital;
 import com.questpro.doctor_patient_system.entities.Patient;
 import com.questpro.doctor_patient_system.entities.Users;
 import com.questpro.doctor_patient_system.enums.Role;
-import com.questpro.doctor_patient_system.exceptions.HospitalNotFoundException;
-import com.questpro.doctor_patient_system.exceptions.InvalidLoginCredentialsException;
-import com.questpro.doctor_patient_system.exceptions.UserAlreadyExistsException;
-import com.questpro.doctor_patient_system.exceptions.UserNotFoundException;
+import com.questpro.doctor_patient_system.exceptions.*;
+import com.questpro.doctor_patient_system.repository.IBlacklistedTokenRepository;
 import com.questpro.doctor_patient_system.repository.IHospitalRepository;
 import com.questpro.doctor_patient_system.repository.IPatientRepository;
 import com.questpro.doctor_patient_system.repository.IUserRepository;
@@ -20,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 @Service
 public class AuthService {
@@ -42,6 +43,10 @@ public class AuthService {
     @Autowired
     private IHospitalRepository hospitalRepository;
 
+    @Autowired
+    private IBlacklistedTokenRepository blacklistedTokenRepository;
+
+    //______________________LOGIN USER____________________________________//
 
     public LoginResponseDto loginUser(LoginRequestDto loginRequestDto) {
 
@@ -59,6 +64,9 @@ public class AuthService {
         Users users = userRepository.findByEmail(loginRequestDto.getEmail())
                 .orElseThrow( ()-> new UserNotFoundException("User Not Found! "));
 
+        if(! users.isActive()){
+            throw  new InactiveUserException("Account Deactivated ! Please Contact Hospital Admin!");
+        }
         // Generate JWT for the user
         String token = jwtService.generateToken(users);
 
@@ -72,6 +80,35 @@ public class AuthService {
 
 
     }
+
+
+    //______________________LOGOUT USER____________________________________//
+
+
+    public void logout(String token) {
+        // check if already blacklisted
+        if (blacklistedTokenRepository.existsByToken(token)) {
+            throw new AlreadyLoggedOutException("Already logged out");
+        }
+
+        Date expiration = jwtService.extractExpiration(token);
+
+        BlacklistedToken blacklistedToken = new BlacklistedToken();
+        blacklistedToken.setToken(token);
+        blacklistedToken.setBlacklistedAt(LocalDateTime.now());
+
+        //expiration is Date which needs to be converted to LocalDatetime
+        // Date -> Instant -> TimeZone added -> LocalDateTime
+
+        blacklistedToken.setExpiresAt(expiration.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime());
+
+        blacklistedTokenRepository.save(blacklistedToken);
+    }
+
+    //--------------------------PATIENT REGISTRATION-----------------------------//
+
 
     public PatientRegisterResponseDto registerPatient(RegisterRequestDto registerRequestDto){
         if(userRepository.findByEmail(registerRequestDto.getEmail()).isPresent()){
@@ -104,6 +141,9 @@ public class AuthService {
                 .build();
 
     }
+
+    //----------------------------------ADMIN-REGISTRATION-----------------------//
+
 
     public RegisterResponseDto registerAdmin(AdminRegisterRequestDto dto) {
         // 1.Check if user already exists
@@ -139,4 +179,6 @@ public class AuthService {
 
 
     }
+
+
 }

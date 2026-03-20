@@ -3,6 +3,7 @@ package com.questpro.doctor_patient_system.controller;
 import com.questpro.doctor_patient_system.dtos.*;
 import com.questpro.doctor_patient_system.service.AnalyticsService;
 import com.questpro.doctor_patient_system.service.DoctorService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,7 +28,7 @@ public class AdminController {
     @PostMapping(value = "/createDoctor" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<CreateDoctorResponseDto>> createDoctor(
-            @RequestPart("data") CreateDoctorRequestDto dto,
+            @Valid @RequestPart("data") CreateDoctorRequestDto dto,
             @RequestPart(value = "image", required = true) MultipartFile image,
             Authentication authentication
             ){

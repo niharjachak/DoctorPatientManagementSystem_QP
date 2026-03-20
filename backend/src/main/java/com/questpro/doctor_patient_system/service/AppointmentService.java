@@ -45,7 +45,13 @@ public class AppointmentService {
         Doctor doctor = doctorRepository.findById(dto.getDoctorId())
                 .orElseThrow(() -> new UserNotFoundException("Doctor not found"));
 
-        //2 Fetch the slot with lock
+        // Check if doctor is active or not
+        if (!doctor.getUsers().isActive()) {
+            throw new InactiveUserException("This doctor is no longer accepting appointments");
+        }
+
+        //2 As soon as you fetch the slot you lock it for this transaction
+        // So that nobody will be able to book it simultaneously.
         // The slot cannot be booked by two patients simultaneously
         Slot slot= slotRepository.findByIdWithLock(dto.getSlotId())
                 .orElseThrow(()-> new SlotNotFoundException("Slot Not Found"));

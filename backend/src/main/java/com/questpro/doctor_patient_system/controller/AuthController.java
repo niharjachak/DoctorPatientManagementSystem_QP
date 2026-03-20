@@ -2,6 +2,8 @@ package com.questpro.doctor_patient_system.controller;
 
 import com.questpro.doctor_patient_system.dtos.*;
 import com.questpro.doctor_patient_system.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +20,8 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/register/patient")
-    public ResponseEntity<ApiResponse<PatientRegisterResponseDto>> registerPatient(@RequestBody RegisterRequestDto registerRequestDto){
+    public ResponseEntity<ApiResponse<PatientRegisterResponseDto>> registerPatient(
+            @Valid @RequestBody RegisterRequestDto registerRequestDto){
         PatientRegisterResponseDto response=authService.registerPatient(registerRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -26,7 +29,8 @@ public class AuthController {
     }
 
     @PostMapping("/register/admin")
-    public ResponseEntity<ApiResponse<RegisterResponseDto>> registerAdmin(@RequestBody AdminRegisterRequestDto registerRequestDto){
+    public ResponseEntity<ApiResponse<RegisterResponseDto>> registerAdmin(
+            @Valid @RequestBody AdminRegisterRequestDto registerRequestDto){
         RegisterResponseDto response=authService.registerAdmin(registerRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -35,13 +39,31 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<?>> loginUser(@RequestBody LoginRequestDto loginRequestDto){
+    public ResponseEntity<ApiResponse<?>> loginUser(
+            @Valid @RequestBody LoginRequestDto loginRequestDto){
 
         LoginResponseDto response = authService.loginUser(loginRequestDto);
         return ResponseEntity.ok(
                 new ApiResponse<>(true, "Login Succesfull",response)
         );
 
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<String>> logout(
+            HttpServletRequest request) {
+
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("No token provided");
+        }
+
+        String token = authHeader.substring(7);
+        authService.logout(token);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(true, "Logged out successfully", null)
+        );
     }
 
 

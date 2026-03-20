@@ -4,6 +4,7 @@ import com.questpro.doctor_patient_system.dtos.ApiResponse;
 import com.questpro.doctor_patient_system.dtos.AppointmentRequestDto;
 import com.questpro.doctor_patient_system.dtos.AppointmentResponseDto;
 import com.questpro.doctor_patient_system.service.AppointmentService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +22,10 @@ public class PatientController {
         @Autowired
         private AppointmentService appointmentService;
 
-        @PostMapping("/bookappointment")
+        @PostMapping("/bookappointments")
         @PreAuthorize("hasRole('PATIENT')")
         public ResponseEntity<ApiResponse<AppointmentResponseDto>> bookAppointment(
-                @RequestBody AppointmentRequestDto dto,
+                @Valid @RequestBody AppointmentRequestDto dto,
                 Authentication authentication
         ) {
             AppointmentResponseDto response = appointmentService

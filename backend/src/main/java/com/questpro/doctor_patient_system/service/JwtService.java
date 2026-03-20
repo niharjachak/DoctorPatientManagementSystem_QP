@@ -15,6 +15,7 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String secretKey;
 
+    // secretKey stored in app.properties is
     private SecretKey getSigningKey(){
         return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
@@ -60,6 +61,15 @@ public class JwtService {
                 .parseSignedClaims(token)
                 .getPayload()
                 .get("mustChangePassword",Boolean.class);
+    }
+
+    public Date extractExpiration(String token) {
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getExpiration();
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
