@@ -22,6 +22,7 @@ import org.yaml.snakeyaml.events.Event;
 
 import javax.print.Doc;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
@@ -108,10 +109,31 @@ public class DoctorService {
     public List<DoctorSearchResponseDto> searchDoctors(DoctorFilterDto filter) {
 
 
+        System.out.println("Gender filter: " + filter.getGender());
+        System.out.println("Speciality filter: " + filter.getSpeciality());
+        System.out.println("Keyword filter: " + filter.getKeyword());
+
+
+        // min fee should not be more than maximum fee
         if (filter.getMinFee() != null && filter.getMaxFee() != null) {
             if (filter.getMinFee() > filter.getMaxFee()) {
                 throw new RuntimeException("Minimum fee cannot be greater than maximum fee");
             }
+        }
+
+        // slot date should not be in the past
+        if (filter.getDate() != null && filter.getDate().isBefore(LocalDate.now())) {
+            throw new InvalidSlotTimeException("Date cannot be in the past");
+        }
+
+        if(filter.getHospitalName()!=null && filter.getHospitalName().length() >100){
+            throw new InvalidNameException("HospitalName must not exceed 100 characters");
+
+        }
+
+        if(filter.getKeyword()!=null && filter.getKeyword().length() >100){
+            throw new InvalidNameException(" DoctorName must not exceed 100 characters");
+
         }
 
         Specification<Doctor> spec = DoctorSpecification.withFilters(filter);
@@ -261,7 +283,7 @@ public class DoctorService {
 
     private void validateDoctorBelongsToHospital(Doctor doctor , Hospital hospital){
         if (doctor.getHospital().getHospitalId()!=(hospital.getHospitalId())){
-            throw new UnauthorizedException("Access Denied! Doctor does not belong to your Hosptial");
+            throw new UnauthorizedException("Access Denied! Doctor does not belong to your Hospital");
         }
     }
 

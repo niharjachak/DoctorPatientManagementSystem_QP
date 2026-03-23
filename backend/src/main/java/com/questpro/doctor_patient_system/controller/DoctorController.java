@@ -48,7 +48,7 @@ public class DoctorController {
                 .body(new ApiResponse<>(true, "Slot added successfully", response));
     }
 
-    @GetMapping("/getSlots")
+    @GetMapping("/getslots")
     @PreAuthorize("hasRole('DOCTOR')")
     public ResponseEntity<ApiResponse<List<SlotResponseDto>>> getMySlots(
             Authentication authentication) {

@@ -1,6 +1,7 @@
 package com.questpro.doctor_patient_system.service;
 
 import com.questpro.doctor_patient_system.entities.Users;
+import com.questpro.doctor_patient_system.exceptions.UserNotFoundException;
 import com.questpro.doctor_patient_system.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -20,7 +21,7 @@ public class CustomUserDetailService implements UserDetailsService {
     // unauthenticated
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Users user = userRepository.findByEmail(email).orElseThrow(()-> new RuntimeException("User not Found"));
+        Users user = userRepository.findByEmail(email).orElseThrow(()-> new UserNotFoundException("User not Found"));
 
         return User.builder()
                 .username(user.getEmail())

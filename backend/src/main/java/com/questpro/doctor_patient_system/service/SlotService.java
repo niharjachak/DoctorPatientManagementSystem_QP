@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -48,6 +49,16 @@ public class SlotService {
             throw new InvalidSlotTimeException("Slot time Cannot be In the Past");
         }
 
+        // Check if start time and endtime are same
+        if (dto.getStartTime().isEqual(dto.getEndTime())) {
+            throw new InvalidSlotTimeException("Start time and end time cannot be the same");
+        }
+        // Slot Should be minimum 15 minutes long
+        long durationMinutes = ChronoUnit.MINUTES.between(dto.getStartTime(), dto.getEndTime());
+        if (durationMinutes < 15) {
+            throw new InvalidSlotTimeException("Slot duration must be at least 15 minutes");
+        }
+
         //Checking if slots are not overlapping
         boolean hasOverLap= slotRepository.existsOverlappingSlot(
                 doctor,
@@ -56,7 +67,7 @@ public class SlotService {
         );
 
         if (hasOverLap){
-            throw new InvalidSlotTimeException("THe Slot Overlaps with One of the existing Slots");
+            throw new InvalidSlotTimeException("The Slot Overlaps with One of the existing Slots");
         }
 
         Slot slot = new Slot();
