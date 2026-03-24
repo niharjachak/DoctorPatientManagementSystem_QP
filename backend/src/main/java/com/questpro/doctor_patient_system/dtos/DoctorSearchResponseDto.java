@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class DoctorSearchResponseDto {
     private Long doctorId;
     private String name;
-    private String imageUrl;             // Base64 encoded
+    private String imageUrl;
     private String speciality;
     private String qualification;
     private int yearsOfExperience;

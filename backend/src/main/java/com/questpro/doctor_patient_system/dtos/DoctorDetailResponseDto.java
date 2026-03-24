@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,4 +24,3 @@ public class DoctorDetailResponseDto {
     private String gender;
     private List<SlotResponseDto> availableSlots;  // reuse existing SlotResponseDto
 }
-

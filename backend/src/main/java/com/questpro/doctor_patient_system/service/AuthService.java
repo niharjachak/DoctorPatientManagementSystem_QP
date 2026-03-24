@@ -150,6 +150,9 @@ public class AuthService {
         if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
             throw new UserAlreadyExistsException("User Already Exists");
         }
+        if (userRepository.existsByPhoneNumber(dto.getPhoneNumber())) {
+            throw new UserAlreadyExistsException("Phone number should be unique");
+        }
         //2 Fetch the hospital for Administration
         Hospital hospital = hospitalRepository.findById(dto.getHospitalId())
                 .orElseThrow(() -> new HospitalNotFoundException("Hospital with id" + dto.getHospitalId() + " not found"));
