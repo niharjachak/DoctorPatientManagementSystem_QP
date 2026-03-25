@@ -11,6 +11,15 @@ import RegistrationChoicePage from './pages/auth/RegistrationChoicePage'
 import AdminRegisterPage from './pages/auth/AdminRegisterPage'
 import ChangePasswordPage from './pages/auth/ChangePasswordPage'
 
+// Import public pages
+import PublicLanding from './pages/PublicLanding'
+import DoctorDetailsPage from './pages/DoctorDetailsPage'
+
+// Import patient pages
+import PatientDashboard from './pages/patient/PatientDashboard'
+import AppointmentsPage from './pages/patient/AppointmentsPage'
+import SearchDoctorsPage from './pages/patient/SearchDoctorsPage'
+
 function App() {
   const { user } = useAuth()
 
@@ -24,6 +33,7 @@ function App() {
       <main className="container mx-auto py-8">
         <Routes>
           {/* PUBLIC ROUTES (anyone can access) */}
+          <Route path="/" element={<PublicLanding />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register-choice" element={<RegistrationChoicePage />} />
           <Route path="/register" element={<RegisterPage />} />
@@ -31,18 +41,32 @@ function App() {
           <Route path="/register/admin" element={<AdminRegisterPage />} />
           <Route path="/change-password" element={<ChangePasswordPage />} />
 
-          {/* Redirect / based on login status */}
+          {/* Public doctor details (login required for booking) */}
+          <Route path="/doctor/:doctorId" element={<DoctorDetailsPage />} />
+
+          {/* PATIENT ROUTES (login required) */}
           <Route
-            path="/"
+            path="/patient/dashboard"
             element={
-              user ? (
-                <div className="text-center">
-                  <h2 className="text-2xl font-bold mb-4">Welcome, {user.name}!</h2>
-                  <p className="text-gray-600">Dashboard will be created based on your role</p>
-                </div>
-              ) : (
-                <LoginPage />
-              )
+              <ProtectedRoute requiredRole="ROLE_PATIENT">
+                <PatientDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/patient/search-doctors"
+            element={
+              <ProtectedRoute requiredRole="ROLE_PATIENT">
+                <SearchDoctorsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/patient/appointments"
+            element={
+              <ProtectedRoute requiredRole="ROLE_PATIENT">
+                <AppointmentsPage />
+              </ProtectedRoute>
             }
           />
 

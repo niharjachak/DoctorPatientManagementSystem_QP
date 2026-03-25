@@ -28,7 +28,7 @@ export default function Navigation() {
             <Link to="/patient/dashboard" className="text-gray-800 hover:text-blue-600 font-medium">
               Dashboard
             </Link>
-            <Link to="/patient/search" className="text-gray-800 hover:text-blue-600 font-medium">
+            <Link to="/patient/search-doctors" className="text-gray-800 hover:text-blue-600 font-medium">
               Search Doctors
             </Link>
             <Link to="/patient/appointments" className="text-gray-800 hover:text-blue-600 font-medium">
