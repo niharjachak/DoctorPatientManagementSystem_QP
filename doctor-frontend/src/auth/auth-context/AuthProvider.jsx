@@ -84,17 +84,21 @@ export function AuthProvider({ children }) {
   }, [applySession]);
 
   const finalizeLogout = useCallback(
-    (redirectPath = ROUTE_PATHS.login) => {
-      clearSession();
-
+    (redirectPath = ROUTE_PATHS.home, navigationState) => {
       if (location.pathname !== redirectPath) {
-        navigate(redirectPath, { replace: true });
+        navigate(redirectPath, { replace: true, state: navigationState });
       }
+
+      clearSession();
     },
     [clearSession, location.pathname, navigate],
   );
 
-  const logout = useCallback(async () => {
+  const logout = useCallback(async (options = {}) => {
+    const {
+      redirectPath = ROUTE_PATHS.home,
+      state: navigationState,
+    } = options;
     const activeToken = authState.token || getStoredAuthSession()?.token;
 
     try {
@@ -104,7 +108,7 @@ export function AuthProvider({ children }) {
     } catch {
       // The backend may reject logout for expired or already invalidated tokens.
     } finally {
-      finalizeLogout();
+      finalizeLogout(redirectPath, navigationState);
     }
   }, [authState.token, finalizeLogout]);
 
@@ -206,4 +210,3 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
-

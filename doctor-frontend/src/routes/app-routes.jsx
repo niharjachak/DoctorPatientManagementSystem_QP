@@ -11,9 +11,13 @@ import DoctorsPage from "../pages/public/DoctorsPage";
 import DoctorDetailPage from "../pages/public/DoctorDetailPage";
 import PatientDashboardPage from "../pages/patient/PatientDashboardPage";
 import PatientAppointmentsPage from "../pages/patient/PatientAppointmentsPage";
+import DoctorChangePasswordPage from "../pages/doctor/DoctorChangePasswordPage";
 import DoctorDashboardPage from "../pages/doctor/DoctorDashboardPage";
 import DoctorSlotsPage from "../pages/doctor/DoctorSlotsPage";
-import DashboardPlaceholderPage from "../pages/dashboard/DashboardPlaceholderPage";
+import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
+import AdminCreateDoctorPage from "../pages/admin/AdminCreateDoctorPage";
+import AdminDoctorsPage from "../pages/admin/AdminDoctorsPage";
+import AdminAnalyticsPage from "../pages/admin/AdminAnalyticsPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import { ROUTE_PATHS } from "./route-paths";
 
@@ -46,12 +50,7 @@ export default function AppRoutes() {
           <Route element={<DoctorPasswordGate />}>
             <Route
               path={ROUTE_PATHS.doctor.changePassword}
-              element={
-                <DashboardPlaceholderPage
-                  roleLabel="Doctor"
-                  title="Doctor Change Password"
-                />
-              }
+              element={<DoctorChangePasswordPage />}
             />
             <Route
               path={ROUTE_PATHS.doctor.dashboard}
@@ -67,39 +66,19 @@ export default function AppRoutes() {
         <Route element={<RoleRoute allowedRoles={["ADMIN"]} />}>
           <Route
             path={ROUTE_PATHS.admin.dashboard}
-            element={
-              <DashboardPlaceholderPage
-                roleLabel="Admin"
-                title="Admin Dashboard"
-              />
-            }
+            element={<AdminDashboardPage />}
           />
           <Route
             path={ROUTE_PATHS.admin.doctors}
-            element={
-              <DashboardPlaceholderPage
-                roleLabel="Admin"
-                title="Admin Doctors"
-              />
-            }
+            element={<AdminDoctorsPage />}
           />
           <Route
             path={ROUTE_PATHS.admin.createDoctor}
-            element={
-              <DashboardPlaceholderPage
-                roleLabel="Admin"
-                title="Create Doctor"
-              />
-            }
+            element={<AdminCreateDoctorPage />}
           />
           <Route
             path={ROUTE_PATHS.admin.analytics}
-            element={
-              <DashboardPlaceholderPage
-                roleLabel="Admin"
-                title="Admin Analytics"
-              />
-            }
+            element={<AdminAnalyticsPage />}
           />
         </Route>
       </Route>

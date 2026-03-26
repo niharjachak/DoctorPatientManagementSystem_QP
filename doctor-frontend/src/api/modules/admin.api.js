@@ -9,6 +9,8 @@ import {
 export async function createDoctor({ data, image }) {
   const formData = buildCreateDoctorFormData(data, image);
 
+  console.log("FormData entries:", [...formData.entries()]);
+
   const response = await apiClient.post(ENDPOINTS.admin.createDoctor, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
