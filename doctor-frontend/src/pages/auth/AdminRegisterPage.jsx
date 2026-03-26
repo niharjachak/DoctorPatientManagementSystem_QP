@@ -23,7 +23,7 @@ export default function AdminRegisterPage() {
   const {
     register,
     handleSubmit,
-    watch,
+    getValues,
     setError,
     formState: { errors, isSubmitting },
   } = useForm({
@@ -36,8 +36,6 @@ export default function AdminRegisterPage() {
       confirmPassword: "",
     },
   });
-
-  const passwordValue = watch("password");
 
   useEffect(() => {
     let isMounted = true;
@@ -74,13 +72,13 @@ export default function AdminRegisterPage() {
     };
   }, []);
 
-  const onSubmit = async ({ confirmPassword, hospitalId, ...values }) => {
+  const onSubmit = async (values) => {
     setFormError("");
 
     try {
       const response = await registerAdmin({
         ...values,
-        hospitalId: Number(hospitalId),
+        hospitalId: Number(values.hospitalId),
       });
 
       navigate("/login", {
@@ -228,7 +226,7 @@ export default function AdminRegisterPage() {
                 {...register("confirmPassword", {
                   required: "Please confirm your password",
                   validate: (value) =>
-                    value === passwordValue || "Passwords do not match",
+                    value === getValues("password") || "Passwords do not match",
                 })}
               />
             </FormField>
@@ -259,4 +257,3 @@ export default function AdminRegisterPage() {
     </AuthPageShell>
   );
 }
-

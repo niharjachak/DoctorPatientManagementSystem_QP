@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import AuthPageShell from "../../components/auth/AuthPageShell";
@@ -14,9 +14,7 @@ export default function LoginPage() {
   const { login } = useAuth();
   const location = useLocation();
   const [formError, setFormError] = useState("");
-  const [successMessage, setSuccessMessage] = useState(
-    location.state?.registrationSuccess || "",
-  );
+  const successMessage = location.state?.registrationSuccess || "";
   const {
     register,
     handleSubmit,
@@ -29,15 +27,8 @@ export default function LoginPage() {
     },
   });
 
-  useEffect(() => {
-    if (location.state?.registrationSuccess) {
-      setSuccessMessage(location.state.registrationSuccess);
-    }
-  }, [location.state]);
-
   const onSubmit = async (values) => {
     setFormError("");
-    setSuccessMessage("");
 
     try {
       await login(values);
@@ -128,4 +119,3 @@ export default function LoginPage() {
     </AuthPageShell>
   );
 }
-

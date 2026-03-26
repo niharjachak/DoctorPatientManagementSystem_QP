@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { login as loginRequest, logout as logoutRequest } from "../../api/modules/auth.api";
 import {
@@ -18,8 +12,7 @@ import {
 } from "../auth-store/auth-storage";
 import { getDefaultRouteForSession } from "../../routes/redirect-by-role";
 import { ROUTE_PATHS } from "../../routes/route-paths";
-
-export const AuthContext = createContext(null);
+import { AuthContext } from "./AuthContext";
 
 const initialAuthState = {
   user: null,
@@ -84,35 +77,38 @@ export function AuthProvider({ children }) {
   }, [applySession]);
 
   const finalizeLogout = useCallback(
-  (redirectPath = ROUTE_PATHS.home, navigationState) => {
-    if (location.pathname !== redirectPath) {
-      navigate(redirectPath, { replace: true, state: navigationState });
-    }
-
-    setTimeout(() => {
-      clearSession();
-    }, 0);
-  },
-  [clearSession, location.pathname, navigate],
-);
-
-  const logout = useCallback(async (options = {}) => {
-    const {
-      redirectPath = ROUTE_PATHS.home,
-      state: navigationState,
-    } = options;
-    const activeToken = authState.token || getStoredAuthSession()?.token;
-
-    try {
-      if (activeToken) {
-        await logoutRequest();
+    (redirectPath = ROUTE_PATHS.home, navigationState) => {
+      if (location.pathname !== redirectPath) {
+        navigate(redirectPath, { replace: true, state: navigationState });
       }
-    } catch {
-      // The backend may reject logout for expired or already invalidated tokens.
-    } finally {
-      finalizeLogout(redirectPath, navigationState);
-    }
-  }, [authState.token, finalizeLogout]);
+
+      setTimeout(() => {
+        clearSession();
+      }, 0);
+    },
+    [clearSession, location.pathname, navigate],
+  );
+
+  const logout = useCallback(
+    async (options = {}) => {
+      const {
+        redirectPath = ROUTE_PATHS.home,
+        state: navigationState,
+      } = options;
+      const activeToken = authState.token || getStoredAuthSession()?.token;
+
+      try {
+        if (activeToken) {
+          await logoutRequest();
+        }
+      } catch {
+        // The backend may reject logout for expired or already invalidated tokens.
+      } finally {
+        finalizeLogout(redirectPath, navigationState);
+      }
+    },
+    [authState.token, finalizeLogout],
+  );
 
   const setMustChangePassword = useCallback((value) => {
     setAuthState((currentState) => {

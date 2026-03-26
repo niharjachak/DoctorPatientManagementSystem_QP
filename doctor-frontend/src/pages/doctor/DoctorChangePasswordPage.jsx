@@ -9,7 +9,7 @@ export default function DoctorChangePasswordPage() {
   const {
     register,
     handleSubmit,
-    watch,
+    getValues,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
@@ -19,13 +19,12 @@ export default function DoctorChangePasswordPage() {
     },
   });
 
-  const newPasswordValue = watch("newPassword");
-
-  const onSubmit = async ({ confirmPassword, ...values }) => {
+  const onSubmit = async (values) => {
     setFormError("");
 
     try {
-      await changePassword(values);
+      const { confirmPassword: _confirmPassword, ...payload } = values;
+      await changePassword(payload);
       await logout({
         redirectPath: "/login",
         state: {
@@ -100,7 +99,7 @@ export default function DoctorChangePasswordPage() {
               {...register("confirmPassword", {
                 required: "Please confirm your new password",
                 validate: (value) =>
-                  value === newPasswordValue || "Passwords do not match",
+                  value === getValues("newPassword") || "Passwords do not match",
               })}
             />
             {errors.confirmPassword ? (

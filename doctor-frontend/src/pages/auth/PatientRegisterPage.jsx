@@ -19,7 +19,7 @@ export default function PatientRegisterPage() {
   const {
     register,
     handleSubmit,
-    watch,
+    getValues,
     setError,
     formState: { errors, isSubmitting },
   } = useForm({
@@ -33,13 +33,12 @@ export default function PatientRegisterPage() {
     },
   });
 
-  const passwordValue = watch("password");
-
-  const onSubmit = async ({ confirmPassword, ...values }) => {
+  const onSubmit = async (values) => {
     setFormError("");
 
     try {
-      const response = await registerPatient(values);
+      const { confirmPassword: _confirmPassword, ...payload } = values;
+      const response = await registerPatient(payload);
       navigate("/login", {
         replace: true,
         state: {
@@ -170,7 +169,7 @@ export default function PatientRegisterPage() {
                 {...register("confirmPassword", {
                   required: "Please confirm your password",
                   validate: (value) =>
-                    value === passwordValue || "Passwords do not match",
+                    value === getValues("password") || "Passwords do not match",
                 })}
               />
             </FormField>
@@ -197,4 +196,3 @@ export default function PatientRegisterPage() {
     </AuthPageShell>
   );
 }
-
