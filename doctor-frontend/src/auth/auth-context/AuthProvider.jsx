@@ -84,15 +84,17 @@ export function AuthProvider({ children }) {
   }, [applySession]);
 
   const finalizeLogout = useCallback(
-    (redirectPath = ROUTE_PATHS.home, navigationState) => {
-      if (location.pathname !== redirectPath) {
-        navigate(redirectPath, { replace: true, state: navigationState });
-      }
+  (redirectPath = ROUTE_PATHS.home, navigationState) => {
+    if (location.pathname !== redirectPath) {
+      navigate(redirectPath, { replace: true, state: navigationState });
+    }
 
+    setTimeout(() => {
       clearSession();
-    },
-    [clearSession, location.pathname, navigate],
-  );
+    }, 0);
+  },
+  [clearSession, location.pathname, navigate],
+);
 
   const logout = useCallback(async (options = {}) => {
     const {
