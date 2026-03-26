@@ -28,7 +28,7 @@ public class Appointment {
     private Doctor doctor;
 
     @OneToOne
-    @JoinColumn(name = "slot_id" , unique = true)
+    @JoinColumn(name = "slot_id" )
     private Slot slot;
 
     @ManyToOne

@@ -11,20 +11,17 @@ import com.questpro.doctor_patient_system.repository.IDoctorRepository;
 import com.questpro.doctor_patient_system.repository.ISlotRepository;
 import com.questpro.doctor_patient_system.repository.IUserRepository;
 import com.questpro.doctor_patient_system.specification.DoctorSpecification;
-import io.jsonwebtoken.security.Password;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.yaml.snakeyaml.events.Event;
 
-import javax.print.Doc;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.LocalDateTime;
-import java.util.Base64;
 import java.util.List;
 import java.util.Random;
 
@@ -153,9 +150,9 @@ public class DoctorService {
             throw new InactiveUserException("This doctor is no longer available");
         }
 
-        // fetch only available slots
+        // fetch only future available slots
         List<SlotResponseDto> availableSlots = slotRepository
-                .findByDoctorAndSlotStatus(doctor, SlotStatus.AVAILABLE)
+                .findAvailableFutureSlots(doctor, LocalDate.now(), LocalTime.now())
                 .stream()
                 .map(slot -> SlotResponseDto.builder()
                         .slotId(slot.getSlotId())
@@ -169,7 +166,7 @@ public class DoctorService {
         return DoctorDetailResponseDto.builder()
                 .doctorId(doctor.getDoctorId())
                 .name(doctor.getUsers().getName())
-                .imageUrl("/public/doctors/" + doctor.getDoctorId() +"/image")
+                .imageUrl("/public/doctors/getImage/"+ doctor.getDoctorId())
                 .speciality(doctor.getSpeciality().name())
                 .qualification(doctor.getQualification())
                 .yearsOfExperience(doctor.getYearsOfExperience())
@@ -197,7 +194,7 @@ public class DoctorService {
                         .yearsOfExperience(doctor.getYearsOfExperience())
                         .fees(doctor.getFees())
                         .gender(doctor.getGender().name())
-                        .imageUrl("/public/doctors/" + doctor.getDoctorId() + "/image")
+                        .imageUrl("/public/doctors/getImage/" + doctor.getDoctorId())
                         .isActive(doctor.getUsers().isActive())
                         .build())
                 .toList();

@@ -64,6 +64,12 @@ public class AppointmentService {
         if(slot.getSlotStatus()!= SlotStatus.AVAILABLE){
             throw new InvalidSlotTimeException("Slot is no longer Available");
         }
+        if (appointmentRepository.existsBySlotAndAppointmentStatus(slot, AppointmentStatus.BOOKED)) {
+            slot.setSlotStatus(SlotStatus.BOOKED);
+            slotRepository.save(slot);
+            throw new InvalidSlotTimeException("Slot is no longer Available");
+        }
+
         
         //5. Mark slot as booked
         slot.setSlotStatus(SlotStatus.BOOKED);

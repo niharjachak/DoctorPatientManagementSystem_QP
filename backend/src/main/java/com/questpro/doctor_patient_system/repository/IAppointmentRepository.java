@@ -3,6 +3,7 @@ package com.questpro.doctor_patient_system.repository;
 import com.questpro.doctor_patient_system.entities.Appointment;
 import com.questpro.doctor_patient_system.entities.Hospital;
 import com.questpro.doctor_patient_system.entities.Patient;
+import com.questpro.doctor_patient_system.entities.Slot;
 import com.questpro.doctor_patient_system.enums.AppointmentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -61,4 +62,6 @@ public interface IAppointmentRepository extends JpaRepository<Appointment,Long> 
             @Param("hospital") Hospital hospital,
             @Param("fromDate") LocalDateTime fromDate
     );
+
+    boolean existsBySlotAndAppointmentStatus(Slot slot, AppointmentStatus appointmentStatus);
 }

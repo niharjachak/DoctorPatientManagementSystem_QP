@@ -10,7 +10,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,6 +46,22 @@ public interface ISlotRepository extends JpaRepository<Slot,Long> {
     Optional<Slot> findByIdWithLock(@Param("slotId") Long slotId);
 
     List<Slot> findByDoctorAndSlotStatus(Doctor doctor, SlotStatus slotStatus);
+
+    @Query("""
+        SELECT s FROM Slot s
+        WHERE s.doctor = :doctor
+        AND s.slotStatus = 'AVAILABLE'
+        AND (
+            s.slotDate > :today
+            OR (s.slotDate = :today AND FUNCTION('TIME', s.startTime) > :now)
+        )
+        ORDER BY s.slotDate ASC, s.startTime ASC
+    """)
+    List<Slot> findAvailableFutureSlots(
+            @Param("doctor") Doctor doctor,
+            @Param("today") LocalDate today,
+            @Param("now") LocalTime now
+    );
 
 
 

@@ -39,6 +39,10 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String jwtToken= request.getHeader("Authorization");
 
+        if (request.getMethod().equals("OPTIONS")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
             // if the token is empty or blank reject the request
         if(jwtToken== null ||!jwtToken.startsWith("Bearer ")){
             filterChain.doFilter(request,response);
