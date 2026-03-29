@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"; // React hooks for managing component state and side effects
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { registerAdmin } from "../../api/modules/auth.api";
@@ -13,9 +13,11 @@ import {
 
 const passwordPattern =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
+// AdminRegisterPage is a component that provides a registration form for hospital administrators,
 export default function AdminRegisterPage() {
+  // allowing them to create an account associated with a specific hospital.
   const navigate = useNavigate();
+  // State variables for managing form errors, hospital data, and loading/error states for fetching hospitals.
   const [formError, setFormError] = useState("");
   const [hospitals, setHospitals] = useState([]);
   const [hospitalsLoading, setHospitalsLoading] = useState(true);

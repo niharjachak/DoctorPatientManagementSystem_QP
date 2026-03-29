@@ -1,3 +1,5 @@
+// an object that organizes all the API endpoints used in the application,
+//  categorized by their respective modules (auth, public, patient, doctor, admin).
 export const ENDPOINTS = {
   auth: {
     registerPatient: "/auth/register/patient",

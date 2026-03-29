@@ -6,6 +6,8 @@ import {
   unwrapApiResponse,
 } from "../utils/response-unwrapper";
 
+//functions to handle public API calls, such as fetching hospitals, searching doctors, getting doctor details, etc.
+
 export async function getHospitals() {
   const response = await apiClient.get(ENDPOINTS.public.hospitals);
   return response.data;

@@ -1,7 +1,6 @@
 package com.questpro.doctor_patient_system.specification;
 
 import com.questpro.doctor_patient_system.dtos.DoctorFilterDto;
-import com.questpro.doctor_patient_system.dtos.HospitalResponseDto;
 import com.questpro.doctor_patient_system.entities.Doctor;
 import com.questpro.doctor_patient_system.entities.Hospital;
 import com.questpro.doctor_patient_system.entities.Slot;
@@ -19,7 +18,7 @@ import java.util.List;
 public class DoctorSpecification {
     public static Specification<Doctor> withFilters(DoctorFilterDto filterDto){
 
-                            // doctor            sqlquery           builds conditions
+                            // doctor         sqlquery           builds conditions
         return (root, query, criteriaBuilder) -> {
 
             List<Predicate> predicates = new ArrayList<>();

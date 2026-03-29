@@ -5,6 +5,7 @@ import {
   unwrapApiResponse,
 } from "../utils/response-unwrapper";
 
+// functions to handle doctor-related API calls, such as changing password, managing slots, etc.
 export async function changePassword(payload) {
   const response = await apiClient.post(
     ENDPOINTS.doctor.changePassword,

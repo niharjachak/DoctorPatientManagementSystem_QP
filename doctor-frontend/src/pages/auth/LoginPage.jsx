@@ -1,20 +1,21 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import AuthPageShell from "../../components/auth/AuthPageShell";
-import FormField from "../../components/auth/FormField";
-import { useAuth } from "../../auth/auth-context/useAuth";
+import { useState } from "react";// React hook for managing component state
+import { Link, useLocation } from "react-router-dom"; // React Router hooks for navigation and accessing location state
+import { useForm } from "react-hook-form";// React Hook Form for managing form state and validation
+import AuthPageShell from "../../components/auth/AuthPageShell";// A layout component for authentication pages, providing a consistent structure and styling for forms like login and registration.
+import FormField from "../../components/auth/FormField";// 
+import { useAuth } from "../../auth/auth-context/useAuth";// custom hook for accessing authentication context, allowing the component to interact with authentication state and functions such as login and logout.
 import {
   applyServerFieldErrors,
   buttonClassName,
   inputClassName,
-} from "./auth-form-utils";
+} from "./auth-form-utils"; // utility functions and constants for handling form errors and styling,
 
 export default function LoginPage() {
   const { login } = useAuth();
   const location = useLocation();
   const [formError, setFormError] = useState("");
   const successMessage = location.state?.registrationSuccess || "";
+  //
   const {
     register,
     handleSubmit,
